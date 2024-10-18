@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "globals": "^15.11.0",
+    "nodemon": "^3.1.7",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.10.0"
+  },
+  "nodemonConfig": {
+    "verbose": "true",
+    "ext": "*.ts"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.7.6",
+    "eslint": "^9.12.0",
+    "express": "^4.21.1",
+    "morgan": "^1.10.0"
+  },
+  "scripts": {
+    "start": "tsc && nodemon dist/server.js",
+    "dev:server": "nodemon server.js"
+  }
+}
