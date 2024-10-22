@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 
-# Do not commit Jest coverage test report
+# Do not commit Jest test coverage report
 coverage
 
 # Editor directories and files
