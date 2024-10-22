@@ -2,9 +2,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "types": ["node", "jest", "@testing-library/jest-dom", "vite/client"],
+    "types": ["node", "jest", "@testing-library/jest-dom", "vite/client", "@testing-library/jest-dom/jest-globals"],
   },
-  "include": ["./jest.setup.js", "tests/**/*"],
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
