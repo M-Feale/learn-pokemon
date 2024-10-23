@@ -2,8 +2,6 @@ import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import jest from "eslint-plugin-jest";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
-import { IndentStyle } from "typescript";
 
 export default [
   {
@@ -26,11 +24,7 @@ export default [
   },
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn"
+      "@typescript-eslint/no-unused-vars": "warn",
     },
   },
-  eslintPluginPrettierRecommended,
-  {
-    "prettier/prettier": []
-  }
 ];
