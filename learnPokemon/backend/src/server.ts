@@ -1,5 +1,5 @@
 import express from "express";
-import connectToDatabase from "./handlers";
+import { connectToDatabase } from "./handlers";
 
 const PORT = 4000;
 
