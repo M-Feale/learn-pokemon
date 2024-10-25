@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Do not commit Jest test coverage report
+coverage
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +25,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# misc
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
