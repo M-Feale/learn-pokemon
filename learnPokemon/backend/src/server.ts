@@ -1,5 +1,5 @@
 import express from "express";
-import { connectToDatabase } from "./handlers";
+import { connectToDatabase, getPokemonSprite } from "./handlers";
 
 const PORT = 4000;
 
@@ -12,6 +12,8 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/api/db", connectToDatabase);
+
+app.get("/api/pokemon/sprite", getPokemonSprite);
 
 app.listen(PORT, () => {
 	console.log(`Basic server listening on port ${PORT}`);
