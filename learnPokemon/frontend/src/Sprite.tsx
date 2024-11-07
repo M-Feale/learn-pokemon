@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Sprite = () => {
 	const [sprite, setSprite] = useState("");
 
-	const handleOnClick = () => {
+	useEffect(() => {
 		fetch("/api/pokemon/sprite")
 			.then((res) => res.json())
 			.then((parsedResponse) => {
@@ -12,15 +12,26 @@ const Sprite = () => {
 				}
 			})
 			.catch((error) => console.error("Fetch didn't work:", error.message));
-	};
+	}, []);
 
 	return (
-		<div style={{ display: "flex", flexDirection: "column" }}>
-			<button onClick={handleOnClick}>Get Pokemon Sprite!</button>
-			{sprite !== null ? (
-				<img src={sprite} alt="Pokemon Sprite" />
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+			}}
+		>
+			{!sprite ? (
+				<p style={{ backgroundColor: "blue" }}>Loading</p>
 			) : (
-				<p>Oups! The sprite is not working!</p>
+				<img
+					src={sprite}
+					alt="Pokemon Sprite"
+					style={{
+						width: "400px",
+						filter: "drop-shadow(20px 20px 20px #fff)",
+					}}
+				/>
 			)}
 		</div>
 	);
