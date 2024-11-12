@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Sprite from "./Sprite";
+import Title from "./Title";
 
 const GuessingPage = () => {
 	return (
@@ -11,6 +12,7 @@ const GuessingPage = () => {
 			<div
 				style={{
 					display: "flex",
+					flexDirection: "column",
 					justifyContent: "center",
 					alignItems: "center",
 					position: "fixed",
@@ -21,6 +23,7 @@ const GuessingPage = () => {
 					top: "0px",
 				}}
 			>
+				<Title />
 				<Sprite />
 			</div>
 		</>
