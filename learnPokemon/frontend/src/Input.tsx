@@ -11,14 +11,14 @@ const Input = () => {
 
 const LabelAndInput = styled.div`
 	position: relative;
+	background-color: #363b81;
+	padding: 50px;
 
 	& input {
 		width: 50vw;
 		font-size: 60px;
 		font-family: "Lalezar";
 		font-weight: 400;
-		font-style: "normal";
-		outline: 50px solid #363b81;
 	}
 
 	& label {
@@ -29,7 +29,7 @@ const LabelAndInput = styled.div`
 		font-family: "Lalezar";
 		font-weight: 400;
 		font-style: normal;
-		left: 4px;
+		left: 54px;
 		color: rgb(118, 118, 118); // To be a grey like the palceholder
 	}
 
