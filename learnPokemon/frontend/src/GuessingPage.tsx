@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Sprite from "./Sprite";
 import Title from "./Title";
+import Input from "./Input";
 
 const GuessingPage = () => {
 	return (
@@ -25,6 +26,7 @@ const GuessingPage = () => {
 			>
 				<Title />
 				<Sprite />
+				<Input />
 			</div>
 		</>
 	);
