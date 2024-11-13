@@ -35,7 +35,7 @@ export const connectToDatabase: RequestHandler = async (req: Request, res: Respo
 
 export const getPokemonSprite = async (req: Request, res: Response) => {
 	try {
-		const pokeResponse = await fetch("https://pokeapi.co/api/v2/pokemon/25");
+		const pokeResponse = await fetch("https://pokeapi.co/api/v2/pokemon/1");
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const data: any = await pokeResponse.json();
 		res.status(200).json({
