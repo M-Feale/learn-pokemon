@@ -5,13 +5,15 @@ import dotenv from "dotenv";
 dotenv.config();
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT } = process.env;
 
+// export const createGameSessionDataBase: RequestHandler = async (req: Request, res: Response) => {
+
 export const connectToDatabase: RequestHandler = async (req: Request, res: Response) => {
 	const dbConfig: ClientConfig = {
 		user: DB_USER,
 		password: DB_PWD,
 		host: DB_HOST,
 		port: Number(DB_PORT),
-		database: "dvdrental",
+		database: "",
 	};
 
 	const client = new Client(dbConfig);
@@ -20,10 +22,26 @@ export const connectToDatabase: RequestHandler = async (req: Request, res: Respo
 		await client.connect();
 		console.log("Connected to PostgreSQL database");
 
-		const results = await client.query("SELECT first_name FROM customer");
-		console.log("Results:", results);
+		const dbName = "learn_pokemon"; // dvdrental
+		const dbExistsQuery = `SELECT datname FROM pg_catalog.pg_database WHERE datname = '${dbName}'`;
 
-		res.status(200).json({ status: 200, message: "Success", data: results });
+		// const doesExist = await client.query(
+		// 	`SELECT datname FROM pg_catalog.pg_database WHERE datname = '${db}'`
+		// );
+		const doesExist = await client.query(dbExistsQuery);
+		if (doesExist.rowCount === 1) {
+			console.log(`The database called ${dbName} does exist.`);
+		} else if (doesExist.rowCount === 0) {
+			console.log(`The database called ${dbName} does NOT exist.`);
+		}
+		// console.log("My Query result:", doesExist);
+
+		// const results = await client.query(
+		// 	"SELECT first_name || ' ' || last_name, email FROM customer"
+		// );
+		// console.log("Results:", results);
+
+		res.status(200).json({ status: 200, message: "Success", data: doesExist });
 	} catch (err) {
 		console.log("Error", err);
 		res.status(500).json({ status: 500, message: "Server Error" });
