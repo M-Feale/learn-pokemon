@@ -36,7 +36,6 @@
 	"scripts": {
 		"build": "tsc",
 		"start": "tsc && nodemon dist/server.js",
-		"dev:server": "nodemon server.js",
 		"test": "jest",
 		"test:watch": "jest --watch",
 		"lint": "eslint"
