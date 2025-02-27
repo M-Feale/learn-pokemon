@@ -2,6 +2,7 @@ import { Client, ClientConfig } from "pg";
 import { Request, Response, RequestHandler } from "express";
 
 import dotenv from "dotenv";
+import { table } from "console";
 dotenv.config();
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
@@ -16,6 +17,10 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 
 	const client = new Client(dbConfig);
 
+	// The name of the session will wbe in the name of the table in the DB.
+	// For now, it's going to be a fixed name so I can easily debug it
+	const sessionName = "potato";
+
 	try {
 		await client.connect();
 		console.log("Connected to PostgreSQL database");
@@ -23,28 +28,29 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 		// Check if learn_pokemon database exists
 		const dbExistsQuery = `SELECT datname FROM pg_catalog.pg_database WHERE datname = '${dbConfig.database}'`;
 		const dbAnswer = await client.query(dbExistsQuery);
+
+		// If DB doesn't exist, send a 500 because there is a problem
+		if (dbAnswer.rowCount === 0) {
+			res.status(500).json({
+				status: 500,
+				message: `Error: The database called ${dbConfig.database} does NOT exist.`,
+			});
+		}
 		// If it does, create a game session and return the name of the session + the first pokemon to guess
-		// The name of the session will wbe in the name of the table in the DB.
-		// For now, it's going to be a fixed name so I can easily debug it
-		const sessionName = "potato";
-		if (dbAnswer.rowCount === 1) {
-			console.log(`The database called ${dbConfig.database} does exist.`);
+		else if (dbAnswer.rowCount === 1) {
 			// Create a table in the DB that has the sessionName_pokemon name
 			// (Declare each columns with the data type and table_id and poke_id as primary keys
 			// (must be unique and defines the default target column for foreign keys referencing its table))
+			const tableCreation = await client.query(
+				`CREATE TABLE ${sessionName}_pokemon (${sessionName}_pokemon_id serial, poke_id integer, poke_name text, guessed boolean, success boolean, PRIMARY KEY (${sessionName}_pokemon_id, poke_id)  )`
+			);
+			console.log("Table creation message: ", tableCreation);
 			// Since we only want pokemon from the first gen at this point, generate 10 (because we start with 10) random numbers between 1 and 151 (gen 1)
 			// Connect with the pokemon API to get the pokemon corresponding to the random number between 1 and 151 I've generated
 			// Add the pokemon to the table
 			// Continue until table has its 10 pokemon
 			// Send the first pokemon_id to the FE (pick the first one ordered by table_id)
 			// res.status(200).json({ status: 200, message: "Success", data: {sessionName: sessionName, firstPokemon: firstPokemonId }  });
-		}
-		// if it does NOT, there is a problem so send a 500
-		else if (dbAnswer.rowCount === 0) {
-			res.status(500).json({
-				status: 500,
-				message: `Error: The database called ${dbConfig.database} does NOT exist.`,
-			});
 		}
 	} catch (err) {
 		console.log("Error", err);
@@ -55,6 +61,22 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 	}
 };
 
+export const getPokemonSprite = async (req: Request, res: Response) => {
+	try {
+		const pokeResponse = await fetch("https://pokeapi.co/api/v2/pokemon/1");
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const data: any = await pokeResponse.json();
+		res.status(200).json({
+			status: 200,
+			message: "Success!",
+			data: data.sprites.front_default,
+		});
+	} catch (err) {
+		console.log("Error:", err);
+	}
+};
+
+// Handler is a proof of concept, will be deleted later
 export const connectToDatabase: RequestHandler = async (req: Request, res: Response) => {
 	const dbConfig: ClientConfig = {
 		user: DB_USER,
@@ -96,20 +118,5 @@ export const connectToDatabase: RequestHandler = async (req: Request, res: Respo
 	} finally {
 		client.end();
 		console.log("Connection to PostgreSQL closed");
-	}
-};
-
-export const getPokemonSprite = async (req: Request, res: Response) => {
-	try {
-		const pokeResponse = await fetch("https://pokeapi.co/api/v2/pokemon/1");
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const data: any = await pokeResponse.json();
-		res.status(200).json({
-			status: 200,
-			message: "Success!",
-			data: data.sprites.front_default,
-		});
-	} catch (err) {
-		console.log("Error:", err);
 	}
 };
