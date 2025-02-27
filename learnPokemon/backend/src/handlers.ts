@@ -2,11 +2,16 @@ import { Client, ClientConfig } from "pg";
 import { Request, Response, RequestHandler } from "express";
 
 import dotenv from "dotenv";
-import { table } from "console";
+import { createUniqueRandomIds, getRandomIntInclusive } from "./utils";
 dotenv.config();
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
 export const createGameSession: RequestHandler = async (req: Request, res: Response) => {
+	interface PokeApiReponse {
+		name: string;
+		id: number;
+	}
+
 	const dbConfig: ClientConfig = {
 		user: DB_USER,
 		password: DB_PWD,
@@ -44,9 +49,20 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 			const tableCreation = await client.query(
 				`CREATE TABLE ${sessionName}_pokemon (${sessionName}_pokemon_id serial, poke_id integer, poke_name text, guessed boolean, success boolean, PRIMARY KEY (${sessionName}_pokemon_id, poke_id)  )`
 			);
-			console.log("Table creation message: ", tableCreation);
+
 			// Since we only want pokemon from the first gen at this point, generate 10 (because we start with 10) random numbers between 1 and 151 (gen 1)
+			const pokeIds = createUniqueRandomIds(10, 1, 151);
+			console.log("unique Id array:", pokeIds);
 			// Connect with the pokemon API to get the pokemon corresponding to the random number between 1 and 151 I've generated
+			// I'll start with the first one of the array, to make sure not to spam the API
+			const firstPokemonAPIRes = await fetch(
+				`https://pokeapi.co/api/v2/pokemon/${pokeIds.at(0)}`
+			);
+			console.log("pokemon url", firstPokemonAPIRes.url);
+			const firstPokemonData = (await firstPokemonAPIRes.json()) as PokeApiReponse;
+			console.log("first pokemon data response:", firstPokemonData);
+			// I want to extract the name and id separately to insert them separately in the table.
+			const firstPokemonName = firstPokemonData.name;
 			// Add the pokemon to the table
 			// Continue until table has its 10 pokemon
 			// Send the first pokemon_id to the FE (pick the first one ordered by table_id)
