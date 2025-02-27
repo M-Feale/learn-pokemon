@@ -3,7 +3,7 @@ import { Request, Response, RequestHandler } from "express";
 
 import dotenv from "dotenv";
 dotenv.config();
-const { DB_USER, DB_PWD, DB_HOST, DB_PORT } = process.env;
+const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
 export const createGameSession: RequestHandler = async (req: Request, res: Response) => {
 	const dbConfig: ClientConfig = {
@@ -11,7 +11,7 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 		password: DB_PWD,
 		host: DB_HOST,
 		port: Number(DB_PORT),
-		database: "",
+		database: DB_NAME,
 	};
 
 	const client = new Client(dbConfig);
@@ -21,11 +21,34 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 		console.log("Connected to PostgreSQL database");
 
 		// Check if learn_pokemon database exists
-		// If it does, create a game session
-		// if it does NOT, create the db + create a game session table in the db
+		const dbExistsQuery = `SELECT datname FROM pg_catalog.pg_database WHERE datname = '${dbConfig.database}'`;
+		const dbAnswer = await client.query(dbExistsQuery);
+		// If it does, create a game session and return the name of the session + the first pokemon to guess
+		// The name of the session will wbe in the name of the table in the DB.
+		// For now, it's going to be a fixed name so I can easily debug it
+		const sessionName = "potato";
+		if (dbAnswer.rowCount === 1) {
+			console.log(`The database called ${dbConfig.database} does exist.`);
+			// Create a table in the DB that has the sessionName_pokemon name
+			// (Declare each columns with the data type and table_id and poke_id as primary keys
+			// (must be unique and defines the default target column for foreign keys referencing its table))
+			// Since we only want pokemon from the first gen at this point, generate 10 (because we start with 10) random numbers between 1 and 151 (gen 1)
+			// Connect with the pokemon API to get the pokemon corresponding to the random number between 1 and 151 I've generated
+			// Add the pokemon to the table
+			// Continue until table has its 10 pokemon
+			// Send the first pokemon_id to the FE (pick the first one ordered by table_id)
+			// res.status(200).json({ status: 200, message: "Success", data: {sessionName: sessionName, firstPokemon: firstPokemonId }  });
+		}
+		// if it does NOT, there is a problem so send a 500
+		else if (dbAnswer.rowCount === 0) {
+			res.status(500).json({
+				status: 500,
+				message: `Error: The database called ${dbConfig.database} does NOT exist.`,
+			});
+		}
 	} catch (err) {
 		console.log("Error", err);
-		res.status(500).json({ status: 500, message: "Server Error" });
+		res.status(500).json({ status: 500, message: "An unknown error happened in the server" });
 	} finally {
 		client.end();
 		console.log("Connection to PostgreSQL closed");
