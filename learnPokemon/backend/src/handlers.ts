@@ -1,8 +1,8 @@
 import { Client, ClientConfig } from "pg";
 import { Request, Response, RequestHandler } from "express";
+import { createUniqueRandomIds } from "./utils";
 
 import dotenv from "dotenv";
-import { createUniqueRandomIds } from "./utils";
 dotenv.config();
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
