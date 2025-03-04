@@ -47,7 +47,14 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 			// (Declare each columns with the data type and table_id and poke_id as primary keys
 			// (must be unique and defines the default target column for foreign keys referencing its table))
 			const tableCreation = await client.query(
-				`CREATE TABLE ${sessionName}_pokemon (${sessionName}_pokemon_id serial, poke_id integer, poke_name text, guessed boolean, success boolean, PRIMARY KEY (${sessionName}_pokemon_id, poke_id)  )`
+				`CREATE TABLE ${sessionName}_pokemon (
+          ${sessionName}_pokemon_id serial, 
+          poke_id integer, 
+          poke_name text, 
+          guessed boolean DEFAULT false, 
+          success boolean DEFAULT false, 
+          PRIMARY KEY (${sessionName}_pokemon_id, poke_id)
+          )`
 			);
 
 			// Since we only want pokemon from the first gen at this point, generate 10 (because we start with 10) random numbers between 1 and 151 (gen 1)
@@ -58,12 +65,33 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 			const firstPokemonAPIRes = await fetch(
 				`https://pokeapi.co/api/v2/pokemon/${pokeIds.at(0)}`
 			);
-			console.log("pokemon url", firstPokemonAPIRes.url);
+			// console.log("pokemon url", firstPokemonAPIRes.url);
 			const firstPokemonData = (await firstPokemonAPIRes.json()) as PokeApiReponse;
-			console.log("first pokemon data response:", firstPokemonData);
+			// console.log("first pokemon data response:", firstPokemonData);
 			// I want to extract the name and id separately to insert them separately in the table.
 			const firstPokemonName = firstPokemonData.name;
+			console.log("pokemon name:", firstPokemonName);
 			// Add the pokemon to the table
+			await client.query(
+				`INSERT INTO ${sessionName}_pokemon (poke_id, poke_name) 
+          VALUES ('${firstPokemonData.id}', '${firstPokemonData.name}')
+          `
+			);
+			// Do a second one to make sure that the SERIAL is working for the potato_pokemon_id
+			const secondPokemonAPIRes = await fetch(
+				`https://pokeapi.co/api/v2/pokemon/${pokeIds.at(1)}`
+			);
+			// console.log("pokemon url", secondPokemonAPIRes.url);
+			const secondPokemonData = (await secondPokemonAPIRes.json()) as PokeApiReponse;
+			// console.log("second pokemon data response:", secondPokemonData);
+			// I want to extract the name and id separately to insert them separately in the table.
+			console.log("pokemon name:", secondPokemonData.name);
+			// Add the pokemon to the table
+			await client.query(
+				`INSERT INTO ${sessionName}_pokemon (poke_id, poke_name) 
+          VALUES ('${secondPokemonData.id}', '${secondPokemonData.name}')
+          `
+			);
 			// Continue until table has its 10 pokemon
 			// Send the first pokemon_id to the FE (pick the first one ordered by table_id)
 			// res.status(200).json({ status: 200, message: "Success", data: {sessionName: sessionName, firstPokemon: firstPokemonId }  });
