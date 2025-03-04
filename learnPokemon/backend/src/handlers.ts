@@ -2,7 +2,7 @@ import { Client, ClientConfig } from "pg";
 import { Request, Response, RequestHandler } from "express";
 
 import dotenv from "dotenv";
-import { createUniqueRandomIds, getRandomIntInclusive } from "./utils";
+import { createUniqueRandomIds } from "./utils";
 dotenv.config();
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
@@ -22,7 +22,7 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 
 	const client = new Client(dbConfig);
 
-	// The name of the session will wbe in the name of the table in the DB.
+	// The name of the session will be in the name of the table in the DB.
 	// For now, it's going to be a fixed name so I can easily debug it
 	const sessionName = "potato";
 
@@ -73,8 +73,15 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
                     `
 				);
 			}
-			// Send the first pokemon_id to the FE (pick the first one ordered by table_id)
-			// res.status(200).json({ status: 200, message: "Success", data: {sessionName: sessionName, firstPokemon: firstPokemonId }  });
+			// Send the first poke_id to the FE
+			const firstPokeId = await client.query(
+				`SELECT poke_id FROM ${sessionName}_pokemon WHERE guessed = false ORDER BY ${sessionName}_pokemon_id ASC LIMIT 1`
+			);
+			res.status(200).json({
+				status: 200,
+				message: "Game session created",
+				data: { sessionName: sessionName, pokeId: firstPokeId.rows[0].poke_id },
+			});
 		}
 	} catch (err) {
 		console.log("Error", err);
