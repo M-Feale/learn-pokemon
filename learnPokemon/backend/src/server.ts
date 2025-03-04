@@ -1,5 +1,5 @@
 import express from "express";
-import { createGameSession, getPokemonSprite } from "./handlers";
+import { connectToDatabase, getPokemonSprite } from "./handlers";
 
 const PORT = 4000;
 
@@ -11,10 +11,9 @@ app.get("/api", (req, res) => {
 	res.send("Hello World!");
 });
 
-app.get("/api/pokemon/sprite", getPokemonSprite);
+app.get("/api/db", connectToDatabase);
 
-// For now it's a POST with an empty body but eventually I'll add player name, how many pokemons, what gens, etc.
-app.post("/api/game", createGameSession);
+app.get("/api/pokemon/sprite", getPokemonSprite);
 
 app.listen(PORT, () => {
 	console.log(`Basic server listening on port ${PORT}`);
