@@ -6,14 +6,24 @@ export const getRandomIntInclusive = (min: number, max: number) => {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-export const createUniqueRandomIds = (howMany: number, minRange: number, maxRange: number) => {
-	const uniqueRandomIdsArray: number[] = [];
+export const createUniqueRandomInts = (howMany: number, minRange: number, maxRange: number) => {
+	if (
+		maxRange - minRange < howMany ||
+		maxRange - minRange < 0 ||
+		howMany < 1 ||
+		!Number.isInteger(howMany) ||
+		!Number.isInteger(minRange) ||
+		!Number.isInteger(maxRange)
+	) {
+		throw new RangeError("Invalid arguments");
+	}
+	const uniqueRandomIntsArray: number[] = [];
 
-	while (uniqueRandomIdsArray.length < howMany) {
+	while (uniqueRandomIntsArray.length < howMany) {
 		const newId = getRandomIntInclusive(minRange, maxRange);
-		if (!uniqueRandomIdsArray.includes(newId)) {
-			uniqueRandomIdsArray.push(newId);
+		if (!uniqueRandomIntsArray.includes(newId)) {
+			uniqueRandomIntsArray.push(newId);
 		}
 	}
-	return uniqueRandomIdsArray;
+	return uniqueRandomIntsArray;
 };

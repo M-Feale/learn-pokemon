@@ -1,6 +1,6 @@
 import { Client, ClientConfig } from "pg";
 import { Request, Response, RequestHandler } from "express";
-import { createUniqueRandomIds } from "./utils";
+import { createUniqueRandomInts } from "./utils";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -58,7 +58,7 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 			);
 
 			// Since we only want pokemon from the first gen at this point, generate 10 (because we start with 10) random numbers between 1 and 151 (gen 1)
-			const pokeIds = createUniqueRandomIds(10, 1, 151);
+			const pokeIds = createUniqueRandomInts(10, 1, 151);
 
 			// Fetch a pokemon and insert it in the DB for each pokeId in the array
 			// (Used a for loop since forEach doesn't wait for the async code)
