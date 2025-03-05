@@ -2,11 +2,15 @@ export const add = (a: number, b: number) => {
 	return a + b;
 };
 
-export const getRandomIntInclusive = (min: number, max: number) => {
+export const getRandomIntInclusive = (min: number, max: number): number => {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-export const createUniqueRandomInts = (howMany: number, minRange: number, maxRange: number) => {
+export const createUniqueRandomInts = (
+	howMany: number,
+	minRange: number,
+	maxRange: number
+): number[] => {
 	if (
 		maxRange - minRange < howMany ||
 		maxRange - minRange < 0 ||
