@@ -6,6 +6,10 @@ import dotenv from "dotenv";
 dotenv.config();
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
+export const helloWorld = async (req: Request, res: Response) => {
+	res.send("Hello World");
+};
+
 export const createGameSession: RequestHandler = async (req: Request, res: Response) => {
 	interface PokeApiReponse {
 		name: string;

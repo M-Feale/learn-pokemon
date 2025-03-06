@@ -1,5 +1,5 @@
 import express from "express";
-import { createGameSession, getPokemonSprite } from "./handlers";
+import { createGameSession, getPokemonSprite, helloWorld } from "./handlers";
 
 const PORT = 4000;
 
@@ -7,9 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/api", (req, res) => {
-	res.send("Hello World!");
-});
+app.get("/api", helloWorld);
 
 app.get("/api/pokemon/sprite", getPokemonSprite);
 
