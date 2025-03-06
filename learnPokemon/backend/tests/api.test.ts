@@ -1,21 +1,14 @@
-import { expect, jest, test } from "@jest/globals";
+import { expect, jest, test, describe } from "@jest/globals";
 
 import { helloWorld } from "../src/handlers";
-import {
-	request as req,
-	response as res,
-	type Request as ExpressRequest,
-	type Response as ExpressResponse,
-	type RequestHandler,
-} from "express";
+import type { Request as ExpressRequest, Response as ExpressResponse } from "express";
 
-const mockResponse = jest.mocked(res);
-const mockRequest = jest.mocked(req);
+describe("#helloWorld", () => {
+	test('it should call res send method with the string "Hello World"', async () => {
+		const mockRes = { send: jest.fn() } as unknown as ExpressResponse;
 
-test("/api returns 'Hello World'", async () => {
-	console.log("mockresponse:", mockResponse);
-	console.log("mockresquest:", mockRequest);
-	await helloWorld(req, res, () => {});
-	const spy = jest.spyOn(res, "send");
-	expect(spy).toHaveBeenCalled();
+		await helloWorld(undefined as unknown as ExpressRequest, mockRes, () => {});
+
+		expect(mockRes.send).toHaveBeenCalledWith("Hello World");
+	});
 });
