@@ -1,6 +1,7 @@
+import { expect, test } from "@jest/globals";
 import { getRandomIntInclusive } from "../src/utils";
 
-it("generates a random number in a range, including the min and max", () => {
+test("generates a random number in a range, including the min and max", () => {
 	// Arrange or Scaffolding
 	// Act or Calling
 	// Assert or Assertion
