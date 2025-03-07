@@ -85,4 +85,16 @@ describe("#createUniqueRandomInts", () => {
 
 		expect(fnReturn).toHaveLength(howMany);
 	});
+
+	test("returns an array of unique values", () => {
+		const minRange = 1;
+		const maxRange = 10;
+		const howMany = 3;
+
+		const fnReturn = createUniqueRandomInts(howMany, minRange, maxRange);
+
+		expect(fnReturn.indexOf(fnReturn[0])).toEqual(fnReturn.lastIndexOf(fnReturn[0]));
+		expect(fnReturn.indexOf(fnReturn[1])).toEqual(fnReturn.lastIndexOf(fnReturn[1]));
+		expect(fnReturn.indexOf(fnReturn[2])).toEqual(fnReturn.lastIndexOf(fnReturn[2]));
+	});
 });
