@@ -9,7 +9,7 @@ const Input = () => {
 	);
 };
 
-const LabelAndInput = styled.div`
+export const LabelAndInput = styled.div`
 	position: relative;
 	background-color: #363b81;
 	padding: 50px;
@@ -30,7 +30,7 @@ const LabelAndInput = styled.div`
 		font-weight: 400;
 		font-style: normal;
 		left: 54px;
-		color: rgb(118, 118, 118); // To be a grey like the palceholder
+		color: rgb(118, 118, 118); // To be a grey like the placeholder
 	}
 
 	& input:focus ~ label,
