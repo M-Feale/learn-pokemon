@@ -1,9 +1,39 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+
 import Sprite from "./Sprite";
 import Title from "./Title";
 import Input from "./Input";
+import PlayerStart from "./PlayerStart";
 
 const GuessingPage = () => {
+	const [player, setPlayer] = useState({ name: "", confirmed: false });
+
+	useEffect(() => {
+		if (player.confirmed) {
+			console.log("The player was confirmed, time to call the BE!");
+			fetch("/api/game", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					gameSession: {
+						playerName: player.name,
+						generation: "first",
+						questions: 10,
+					},
+				}),
+			})
+				.then((res) => res.json())
+				.then((parsedRes) => console.log(parsedRes))
+				.catch((error) => {
+					console.error("Fetch error:", error);
+				});
+		}
+	}, [player.confirmed]);
+
 	return (
 		<>
 			<Background>
@@ -25,8 +55,14 @@ const GuessingPage = () => {
 				}}
 			>
 				<Title />
-				<Sprite />
-				<Input />
+				{!player.confirmed ? (
+					<PlayerStart player={player} setPlayer={setPlayer} />
+				) : (
+					<>
+						<Sprite />
+						<Input />
+					</>
+				)}
 			</div>
 		</>
 	);

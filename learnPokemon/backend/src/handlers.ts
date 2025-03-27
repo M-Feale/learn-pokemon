@@ -22,9 +22,11 @@ export const createGameSession: RequestHandler = async (req: Request, res: Respo
 
 	const client = new Client(dbConfig);
 
-	// The name of the session will be in the name of the table in the DB.
-	// For now, it's going to be a fixed name so I can easily debug it
-	const sessionName = "potato";
+	// The session name is the playerName for now.
+	// We'll be using the generation and the questions values eventually when these options are added on the FE (stretch goals)
+	const { gameSession } = req.body;
+
+	const sessionName = gameSession.playerName;
 
 	try {
 		await client.connect();
