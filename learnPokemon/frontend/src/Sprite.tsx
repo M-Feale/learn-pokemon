@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-const Sprite = () => {
+const Sprite = ({ pokeId }) => {
 	const [sprite, setSprite] = useState("");
 
 	useEffect(() => {
-		fetch("/api/pokemon/sprite")
-			.then((res) => res.json())
-			.then((parsedResponse) => {
-				if (parsedResponse.status === 200) {
-					setSprite(parsedResponse.data);
-				}
-			})
-			.catch((error) => console.error("Fetch didn't work:", error.message));
-	}, []);
+		console.log("this is pokeId when sprite loads:", pokeId);
+		if (pokeId) {
+			console.log("pokeId when not falsy:", pokeId);
+			fetch(`/api/pokemon/sprite/${pokeId}`)
+				.then((res) => res.json())
+				.then((parsedResponse) => {
+					console.log("parsedResponse for the sprite:", parsedResponse);
+					if (parsedResponse.status === 200) {
+						console.log("parsedResponse for the sprite:", parsedResponse);
+						setSprite(parsedResponse.data);
+					}
+				})
+				.catch((error) => console.error("Fetch didn't work:", error.message));
+		}
+	}, [pokeId]);
 
 	return (
 		<div

@@ -8,6 +8,7 @@ import PlayerStart from "./PlayerStart";
 
 const GuessingPage = () => {
 	const [player, setPlayer] = useState({ name: "", confirmed: false });
+	const [firstPokemon, setFirstPokemon] = useState("");
 
 	useEffect(() => {
 		if (player.confirmed) {
@@ -27,7 +28,16 @@ const GuessingPage = () => {
 				}),
 			})
 				.then((res) => res.json())
-				.then((parsedRes) => console.log(parsedRes))
+				.then((parsedRes) => {
+					if (parsedRes.status === 200) {
+						console.log(
+							"from GuessingPage, the pokeId from game creation:",
+							parsedRes.data.pokeId
+						);
+						setFirstPokemon(parsedRes.data.pokeId);
+					}
+				})
+
 				.catch((error) => {
 					console.error("Fetch error:", error);
 				});
@@ -55,11 +65,11 @@ const GuessingPage = () => {
 				}}
 			>
 				<Title />
-				{!player.confirmed ? (
+				{!player.confirmed && !firstPokemon ? (
 					<PlayerStart player={player} setPlayer={setPlayer} />
 				) : (
 					<>
-						<Sprite />
+						<Sprite pokeId={firstPokemon} />
 						<Input />
 					</>
 				)}
