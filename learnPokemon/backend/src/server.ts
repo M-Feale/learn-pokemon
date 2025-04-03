@@ -11,7 +11,7 @@ app.get("/api", (req, res) => {
 	res.send("Hello World!");
 });
 
-app.get("/api/pokemon/sprite", getPokemonSprite);
+app.get("/api/pokemon/sprite/:pokeId", getPokemonSprite);
 
 // For now it's a POST with an empty body but eventually I'll add player name, how many pokemons, what gens, etc.
 app.post("/api/game", createGameSession);
