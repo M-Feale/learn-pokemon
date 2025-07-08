@@ -13,7 +13,6 @@ const GuessingPage = () => {
 
 	useEffect(() => {
 		if (player.playerConfirmed) {
-			console.log("The player was confirmed, time to call the BE!");
 			fetch("/api/game", {
 				method: "POST",
 				headers: {
@@ -31,11 +30,10 @@ const GuessingPage = () => {
 				.then((res) => res.json())
 				.then((parsedRes) => {
 					if (parsedRes.status === 200) {
-						console.log(
-							"from GuessingPage, the pokeId from game creation:",
-							parsedRes.data.pokeId
-						);
 						setFirstPokemon(parsedRes.data.pokeId);
+						console.log(
+							"La table est créée dans le BE et le premier id de pokémon est fetched"
+						);
 					}
 				})
 
@@ -53,6 +51,9 @@ const GuessingPage = () => {
 					if (parsedResponse.status === 200) {
 						setSprite(parsedResponse.data);
 						setPlayer({ ...player, gameCreated: true });
+						console.log(
+							"le call pour fetch le sprite est fait et <Sprite> et <Input> apparaissent"
+						);
 					}
 				})
 				.catch((error) => console.error("Fetch didn't work:", error.message));
