@@ -7,11 +7,12 @@ import Input from "./Input";
 import PlayerStart from "./PlayerStart";
 
 const GuessingPage = () => {
-	const [player, setPlayer] = useState({ name: "", confirmed: false });
+	const [player, setPlayer] = useState({ name: "", playerConfirmed: false, gameCreated: false });
 	const [firstPokemon, setFirstPokemon] = useState("");
+	const [sprite, setSprite] = useState("");
 
 	useEffect(() => {
-		if (player.confirmed) {
+		if (player.playerConfirmed) {
 			console.log("The player was confirmed, time to call the BE!");
 			fetch("/api/game", {
 				method: "POST",
@@ -42,7 +43,21 @@ const GuessingPage = () => {
 					console.error("Fetch error:", error);
 				});
 		}
-	}, [player.confirmed]);
+	}, [player.playerConfirmed]);
+
+	useEffect(() => {
+		if (firstPokemon) {
+			fetch(`/api/pokemon/sprite/${firstPokemon}`)
+				.then((res) => res.json())
+				.then((parsedResponse) => {
+					if (parsedResponse.status === 200) {
+						setSprite(parsedResponse.data);
+						setPlayer({ ...player, gameCreated: true });
+					}
+				})
+				.catch((error) => console.error("Fetch didn't work:", error.message));
+		}
+	}, [firstPokemon]);
 
 	return (
 		<>
@@ -65,13 +80,13 @@ const GuessingPage = () => {
 				}}
 			>
 				<Title />
-				{!player.confirmed && !firstPokemon ? (
-					<PlayerStart player={player} setPlayer={setPlayer} />
-				) : (
+				{player.playerConfirmed && player.gameCreated ? (
 					<>
-						<Sprite pokeId={firstPokemon} />
+						<Sprite sprite={sprite} />
 						<Input />
 					</>
+				) : (
+					<PlayerStart player={player} setPlayer={setPlayer} />
 				)}
 			</div>
 		</>
@@ -87,11 +102,6 @@ const Background = styled.div`
 	position: relative;
 	overflow: hidden;
 	z-index: 1;
-
-	// Setting for the TestContainer and InnerBox
-	/* display: flex;
-	justify-content: center;
-	align-items: center; */
 `;
 
 const LeftRectangle = styled.div`
@@ -114,23 +124,5 @@ const RightRectangle = styled.div`
 	transform-origin: top left;
 	transform: rotate(60deg);
 `;
-
-// const TestContainer = styled.div`
-// 	position: relative;
-// 	background-color: yellow;
-// 	width: 200px;
-// 	height: 200px;
-// 	overflow: hidden;
-// `;
-
-// const InnerBox = styled.div`
-// 	position: relative;
-// 	width: 40%; // 40% of 200px (the width of my container) is 80px
-// 	height: 180%;
-// 	background-color: pink;
-// 	transform: rotate(-40deg);
-// 	transform-origin: top right;
-// 	left: -80px; // the width of the inner box (width: 40%)
-// `;
 
 export default GuessingPage;
