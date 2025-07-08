@@ -4,7 +4,7 @@ const PlayerStart = ({ player, setPlayer }) => {
 	const handlePlayer = (event) => {
 		setPlayer({ ...player, name: event.target.value });
 		if (event?.code === "Enter") {
-			setPlayer({ ...player, confirmed: true });
+			setPlayer({ ...player, playerConfirmed: true });
 		}
 	};
 
